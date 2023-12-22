@@ -6,6 +6,8 @@ const {
   updateReviewValidation,
 } = require("../validation");
 
+const checkPermission = require("../utilize/checkPermission");
+
 const getAllReviews = async (req, res) => {
   try {
     const reviews = await Review.find({})
@@ -142,14 +144,7 @@ const deleteReview = async (req, res) => {
       return res.status(404).json({ msg: `No review with id: ${_id}` });
     }
 
-    // 檢查刪除者是否等同於留下評論的人
-    // review.user 會拿到 ObjectId，記得要用 .toString() 將其轉為字串
-    if (review.user.toString() !== req.user.userId) {
-      // Forbidden
-      return res
-        .status(403)
-        .json({ msg: "You are not allow to delete this review" });
-    }
+    checkPermission(req.user, _id);
 
     // 這邊必須使用 review (document) 而非 Review (model)
     // 刪除後，會進到 Mongoose Middleware

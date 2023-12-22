@@ -5,6 +5,8 @@ const {
 } = require("../validation");
 const jwt = require("jsonwebtoken");
 
+const checkPermission = require("../utilize/checkPermission");
+
 const getAllUsers = async (req, res) => {
   try {
     // method chaining (exclude password 這個欄位)
@@ -17,16 +19,9 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  // 只有 role 為 admin 的用戶，能查看 all users
-  // 其他 role 為 user 的人用戶，只能查看自己
-  if (req.user.userRole !== "admin") {
-    if (req.user.userId !== _id) {
-      // Forbidden
-      return res.status(403).json({ msg: "Not authorized to this route" });
-    }
-  }
-
   const { _id } = req.params;
+
+  checkPermission(req.user, _id);
 
   try {
     // 沒找到特定的資料時， return null

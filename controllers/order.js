@@ -6,6 +6,8 @@ const {
   updateOrderValidation,
 } = require("../validation");
 
+const checkPermission = require("../utilize/checkPermission");
+
 const fakeStripeAPI = async ({ amount, currency }) => {
   const client_secret = "someRandomValue";
 
@@ -157,14 +159,7 @@ const updateOrder = async (req, res) => {
       return res.status(404).json({ msg: `No order with id: ${_id}` });
     }
 
-    // 檢查更新者是否等同於 create order 的人
-    // order.user 會拿到 ObjectId，要用 .toString() 將其轉為字串
-    if (order.user.toString() !== req.user.userId) {
-      // Forbidden
-      return res
-        .status(403)
-        .json({ msg: "You are not allow to update this order" });
-    }
+    checkPermission(req.user, _id);
 
     // 更新的部分
     order.paymentIntentId = paymentIntentId;
