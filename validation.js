@@ -15,13 +15,11 @@ const registerValidation = (data) => {
       "string.empty": "Email cannot be empty",
       "string.email": "Email must be a valid email address",
     }),
-    password: Joi.string().required().min(5).max(50).messages({
+    password: Joi.string().required().min(5).messages({
       "any.required": "Password must be provided",
       "string.empty": "Password cannot be empty",
       "string.min":
         "Password should have a minimum length of {#limit} characters",
-      "string.max":
-        "Password should have a maximum length of {#limit} characters",
     }),
     role: Joi.string().valid("admin", "user").default("user").messages({
       "any.only": "Role must be one of: admin, user",
