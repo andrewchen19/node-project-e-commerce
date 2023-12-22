@@ -17,8 +17,6 @@ const getAllUsers = async (req, res) => {
 };
 
 const getUser = async (req, res) => {
-  const { _id } = req.params;
-
   // 只有 role 為 admin 的用戶，能查看 all users
   // 其他 role 為 user 的人用戶，只能查看自己
   if (req.user.userRole !== "admin") {
@@ -27,6 +25,8 @@ const getUser = async (req, res) => {
       return res.status(403).json({ msg: "Not authorized to this route" });
     }
   }
+
+  const { _id } = req.params;
 
   try {
     // 沒找到特定的資料時， return null
