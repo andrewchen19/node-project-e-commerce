@@ -3,7 +3,7 @@
 const jwt = require("jsonwebtoken");
 
 const authTokenMiddleware = async (req, res, next) => {
-  // 沒找到 return undefined
+  // 確保每個請求都有提供 token，沒找到 return undefined
   const token = req.signedCookies.token;
 
   if (!token) {
@@ -25,7 +25,7 @@ const authTokenMiddleware = async (req, res, next) => {
 
     next();
   } catch (error) {
-    // token maybe expired
+    // 處理 expired 或 invalid token
     return res.status(401).json({ msg: "Not authorized to this route" });
   }
 };
