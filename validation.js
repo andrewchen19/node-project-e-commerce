@@ -55,13 +55,11 @@ const updatePasswordValidation = (data) => {
       "any.required": "Old password must be provided",
       "string.empty": "Old password cannot be empty",
     }),
-    newPassword: Joi.string().required().min(5).max(50).messages({
+    newPassword: Joi.string().required().min(5).messages({
       "any.required": "New password must be provided",
       "string.empty": "New Password cannot be empty",
       "string.min":
         "New password should have a minimum length of {#limit} characters",
-      "string.max":
-        "New Password should have a maximum length of {#limit} characters",
     }),
   });
 
