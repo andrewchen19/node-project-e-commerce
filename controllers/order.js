@@ -1,10 +1,7 @@
 const Order = require("../models/Order");
 const Product = require("../models/Product");
 
-const {
-  createOrderValidation,
-  updateOrderValidation,
-} = require("../validation");
+const { updateOrderValidation } = require("../validation");
 
 const checkPermission = require("../utilize/checkPermission");
 
@@ -60,14 +57,15 @@ const getCurrentUserOrders = async (req, res) => {
 };
 
 const createOrder = async (req, res) => {
-  // 檢查每個欄位是否格式都正確
-  const { error } = createOrderValidation(req.body);
+  const { tax, shippingFee, items: cartItems } = req.body;
 
-  if (error) {
-    return res.status(400).json({ error: error.details[0].message });
+  if (!cartItems || cartItems.length < 1) {
+    return res.status(400).json({ msg: "No cart items provided" });
   }
 
-  const { tax, shippingFee, orderItems: cartItems } = req.body;
+  if (!tax || !shippingFee) {
+    return res.status(400).json({ msg: "Please provide tax and shipping fee" });
+  }
 
   let orderItems = [];
   let subtotal = 0;

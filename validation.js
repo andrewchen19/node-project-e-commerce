@@ -212,43 +212,6 @@ const updateReviewValidation = (data) => {
   return schema.validate(data);
 };
 
-// 當有人要創建訂單的話，必須先通過此驗證
-const createOrderValidation = (data) => {
-  const schema = Joi.object({
-    tax: Joi.number().min(0).integer().required().messages({
-      "any.required": "Tax is required",
-      "number.min": "Tax must be at least 0",
-      "number.integer": "Tax must be an integer",
-    }),
-    shippingFee: Joi.number().required().min(0).integer().messages({
-      "any.required": "ShippingFee is required",
-      "number.min": "ShippingFee must be at least 0",
-      "number.integer": "ShippingFee must be an integer",
-    }),
-    orderItems: Joi.array()
-      .items(
-        Joi.object({
-          name: Joi.string().required(),
-          price: Joi.number().required().min(0),
-          image: Joi.string().required(),
-          amount: Joi.number().required().min(1),
-          product: Joi.string().required(),
-        })
-      )
-      .required()
-      .min(1)
-      .messages({
-        "any.required": "OrderItems is required",
-        "array.base": "OrderItems must be an array",
-        "array.min": "At least one item must be provided",
-        "array.includesRequiredUnknowns":
-          "OrderItems must contain only valid objects",
-      }),
-  });
-
-  return schema.validate(data);
-};
-
 // 當有人要更新訂單的話，必須先通過此驗證
 const updateOrderValidation = (data) => {
   const schema = Joi.object({
@@ -270,6 +233,5 @@ module.exports = {
   updateProductValidation,
   createReviewValidation,
   updateReviewValidation,
-  createOrderValidation,
   updateOrderValidation,
 };
