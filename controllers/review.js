@@ -144,6 +144,7 @@ const deleteReview = async (req, res) => {
       return res.status(404).json({ msg: `No review with id: ${_id}` });
     }
 
+    // 找到資料後，查看使用者是否有權限進行操作
     checkPermission(req.user, _id);
 
     // 這邊必須使用 review (document) 而非 Review (model)
@@ -153,8 +154,9 @@ const deleteReview = async (req, res) => {
     res.status(200).json({ msg: "Delete Successful" });
   } catch (error) {
     if (error.name === "CastError") {
-      // Not Found
       return res.status(404).json({ msg: `No review with id: ${_id}` });
+    } else if (error.message === "Permission Fail") {
+      return res.status(403).json({ msg: "Not authorized to this route" });
     } else {
       res.status(500).json({ msg: error });
     }

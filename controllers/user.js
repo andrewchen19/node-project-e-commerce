@@ -21,8 +21,6 @@ const getAllUsers = async (req, res) => {
 const getUser = async (req, res) => {
   const { _id } = req.params;
 
-  checkPermission(req.user, _id);
-
   try {
     // 沒找到特定的資料時， return null
     const user = await User.findOne(req.params).select("-password");
@@ -32,11 +30,15 @@ const getUser = async (req, res) => {
       return res.status(404).json({ msg: `No user with id: ${_id}` });
     }
 
+    // 找到資料後，查看使用者是否有權限進行操作
+    checkPermission(req.user, _id);
+
     res.status(200).json({ user });
   } catch (error) {
     if (error.name === "CastError") {
-      // Not Found
       return res.status(404).json({ msg: `No user with id: ${_id}` });
+    } else if (error.message === "Permission Fail") {
+      return res.status(403).json({ msg: "Not authorized to this route" });
     } else {
       res.status(500).json({ msg: error });
     }
