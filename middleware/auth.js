@@ -26,7 +26,7 @@ const authTokenMiddleware = async (req, res, next) => {
     next();
   } catch (error) {
     // 處理 expired 或 invalid token 的情況
-    return res.status(401).json({ msg: "Not authorized to this route" });
+    res.status(401).json({ msg: "Not authorized to this route" });
   }
 };
 
